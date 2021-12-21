@@ -5,6 +5,7 @@ A simple script to clean up the Tate artwork dataset.
 
 # Library imports
 import pandas as pd
+from numpy import nan
 
 
 def process_file(path):
@@ -61,10 +62,32 @@ def index_filter(df):
     print('\nUse contains and loc to filter on year column:\n', df.loc[df['year'].astype(str).str.contains('1826'), :])
 
 
+def handling_bad_data(df):
+    print('\n\n**** Handling Bad Data Section ****')
+    df['title'] = df['title'].str.strip()
+    print('\nStrip white space from title column:\n', df['title'])
+    print('\nCheck dateText column:\n', df['dateText'])
+    print('\nCheck if dateText column contains NaN values:\n', pd.isna(df.loc[:, 'dateText']))
+    df.replace({'dateText': {'date not known': nan}}, inplace=True)
+    print('\nAfter replacing date not known values with NaN, check dateText column:\n', df['dateText'])
+    print('\nEntries where year contains something other than a number:\n', df.loc[df.year.notnull() & df.year.astype(str).str.contains('[^0-9]')])
+    df.loc[df.year.notnull() & df.year.astype(str).str.contains('[^0-9]'), ['year']] = nan
+    print('\nCheck year column after replacement:\n', df['year'])
+    df.fillna(value={'depth': 0}, inplace=True)
+    print('\nReplace nan depth values with 0:\n', df['depth'])
+    print('\nDrop all rows with nan values (Not in place):\n', df.dropna())
+    print('\nDrop all rows with nan values in certain columns (Not in place):\n', df.dropna(subset=['year', 'acquisitionYear']))
+    print('\nDrop rows that are duplicates (Not in place):\n', df.drop_duplicates())
+    print('\nDrop rows that have duplicates of certain columns (Not in place):\n', df.drop_duplicates(subset=['artist'], keep='first'))
+
+
 def main():
     data = process_file('artwork_sample.csv')
     understand_data(data)
     adjust_columns(data)
     index_filter(data)
+    handling_bad_data(data)
 
+
+# Call main function to run script
 main()
