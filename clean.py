@@ -9,11 +9,22 @@ from numpy import nan
 
 
 def process_file(path):
+    """ Read in file containing artwork information
+
+    :param path: the path to the artwork information file
+    :return data: pandas dataframe
+    """
+
     data = pd.read_csv(path, low_memory=False)
     return data
 
 
 def understand_data(df):
+    """Perform basic aggregate and grouping tasks to understand the data
+
+    :param df: pandas dataframe with artwork information
+    """
+
     print('\n**** Understanding Data Section ****')
     print('\nData head:\n', df.head())
     print('\nData types of columns:\n', df.dtypes)
@@ -30,6 +41,11 @@ def understand_data(df):
 
 
 def adjust_columns(df):
+    """ Practice dropping and renaming columns
+
+    :param df: pandas dataframe with artwork information
+    """
+
     print('\n\n**** Removing and Fixing Columns Section ****')
     print('\nDrop first row (Not in place):\n', df.drop(0))
     print('\nDrop id column:\n', df.drop('id', axis=1))
@@ -46,6 +62,11 @@ def adjust_columns(df):
 
 
 def index_filter(df):
+    """ Practice accessing and filtering elements using loc/iloc
+
+    :param df: pandas dataframe containing artwork information
+    """
+
     print('\n\n***** Indexing and Filtering Section ****')
     print('\nId column:\n', df['id'])
     print('\nSelect multiple columns:\n', df[['artist', 'title']])
@@ -63,6 +84,11 @@ def index_filter(df):
 
 
 def handling_bad_data(df):
+    """ Practicing finding and dropping null or duplicate values
+
+    :param df: pandas dataframe containing artwork information
+    """
+
     print('\n\n**** Handling Bad Data Section ****')
     df['title'] = df['title'].str.strip()
     print('\nStrip white space from title column:\n', df['title'])
@@ -82,6 +108,8 @@ def handling_bad_data(df):
 
 
 def main():
+    """Function to run main script"""
+
     data = process_file('artwork_sample.csv')
     understand_data(data)
     adjust_columns(data)
